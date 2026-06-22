@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Get Judged By A Cat!</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Nunito:wght=400;700;900&display=swap');
+
+        :root {
+            --bg-color: #fff0f5; /* Lavender blush */
+            --primary: #ffb6c1; /* Light pink */
+            --secondary: #98fb98; /* Pale green */
+            --text-dark: #4a4a4a;
+            --accent: #ff69b4; /* Hot pink */
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-color);
+            background-image: radial-gradient(circle at 20px 20px, var(--primary) 2px, transparent 0);
+            background-size: 40px 40px;
+            color: var(--text-dark);
+            font-family: 'Nunito', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            overflow-x: hidden;
+            transition: background 0.1s ease;
+        }
+
+        /* ANNOYING DISCO MODE ACTIVATED */
+        @keyframes discoPsycho {
+            0% { background-color: #ff00ff; background-image: none; }
+            20% { background-color: #00ffff; }
+            40% { background-color: #ffff00; }
+            60% { background-color: #ff0000; }
+            80% { background-color: #00ff00; }
+            100% { background-color: #9400d3; }
+        }
+
+        body.disco-active {
+            animation: discoPsycho 0.2s infinite linear !important;
+            cursor: progress;
+        }
+
+        body.disco-active h1 {
+            animation: spinMe 0.5s infinite linear;
+        }
+
+        @keyframes spinMe {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* NEW: FLASHLIGHT BLACKOUT OVERLAY */
+        #flashlightOverlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: #05050a; /* Pitch black defaults before cursor tracks */
+            z-index: 2147483646; /* Sits right under custom notifications, but masks everything else */
+            pointer-events: none; /* Crucial! Allows clicks to bypass the darkness and hit elements below */
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.6s ease;
+        }
+
+        body.blackout-active #flashlightOverlay {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        body.blackout-active {
+            cursor: cell; /* Custom retro crosshair cursor for hunting */
+        }
+
+        header {
+            text-align: center;
+            padding: 3rem 1rem;
+            animation: bounceIn 1s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            transition: transform 0.5s ease;
+        }
+
+        h1 {
+            font-size: 4rem;
+            color: var(--accent);
+            text-shadow: 3px 3px 0px #fff, 5px 5px 0px rgba(0,0,0,0.1);
+            margin: 0;
+            line-height: 1.1;
+        }
+
+        p.subtitle {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #7b68ee;
+            margin-top: 10px;
+        }
+
+        .judgment-zone {
+            background: white;
+            padding: 2rem;
+            border-radius: 30px;
+            box-shadow: 0 15px 35px rgba(255, 105, 180, 0.2);
+            text-align: center;
+            max-width: 600px;
+            width: 90%;
+            margin: 2rem 0;
+            border: 4px dashed var(--primary);
+            position: relative;
+            transition: transform 0.3s ease;
+        }
+
+        .judgment-text {
+            font-size: 1.8rem;
+            font-weight: 900;
+            color: var(--text-dark);
+            min-height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 1rem 0;
+        }
+
+        button {
+            background: var(--accent);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.5rem;
+            font-weight: bold;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 8px 0 #d0468c, 0 15px 20px rgba(0,0,0,0.2);
+            transition: transform 0.1s, background-color 0.3s;
+            font-family: 'Nunito', sans-serif;
+            user-select: none;
+        }
+
+        button:active {
+            transform: translateY(8px);
+            box-shadow: 0 0 0 #d0468c, 0 5px 10px rgba(0,0,0,0.2);
+        }
+
+        button.running {
+            position: fixed !important;
+            z-index: 2147483647 !important; /* Absolute max priority layer */
+            transition: none !important; 
+            width: 220px !important;
+            height: 65px !important;
+            padding: 0 !important;
+            box-sizing: border-box !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+        }
+
+        button.tired {
+            background: #7f8c8d !important;
+            box-shadow: 0 4px 0 #5c6364 !important;
+            color: #bdc3c7;
+            cursor: not-allowed;
+        }
+
+        .gallery {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 2rem;
+            padding: 2rem;
+            max-width: 1000px;
+            transition: transform 0.4s ease;
+        }
+
+        .cat-pic {
+            width: 250px;
+            height: 250px;
+            object-fit: cover;
+            border-radius: 50%;
+            border: 8px solid white;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            cursor: pointer;
+        }
+
+        .cat-pic:hover {
+            transform: scale(1.1) rotate(5deg);
+        }
+
+        .cat-pic:nth-child(even):hover {
+            transform: scale(1.1) rotate(-5deg);
+        }
+
+        .meow-spam {
+            position: fixed;
+            font-weight: 900;
+            font-size: 2rem;
+            color: red;
+            pointer-events: none;
+            z-index: 2147483647;
+            text-shadow: 2px 2px 0px black;
+            animation: floatUp 0.8s forwards ease-out;
+        }
+
+        @keyframes floatUp {
+            0% { transform: translateY(0) scale(1); opacity: 1; }
+            100% { transform: translateY(-100px) scale(1.5); opacity: 0; }
+        }
+
+        @keyframes bounceIn {
+            0% { transform: scale(0.1); opacity: 0; }
+            60% { transform: scale(1.1); opacity: 1; }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes pop {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2); color: var(--accent); }
+            100% { transform: scale(1); }
+        }
+
+        .animate-pop {
+            animation: pop 0.4s ease-out;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="flashlightOverlay"></div>
+
+    <header id="mainHeader">
+        <h1>🐈 The Judgy Cat 🐾</h1>
+        <p class="subtitle">Step right up for your daily dose of feline disapproval!</p>
+    </header>
+
+    <div class="judgment-zone" id="jZone">
+        <div class="judgment-text" id="judgementText">
+            "Click the button if you dare to know what I think of you."
+        </div>
+        <button id="judgeBtn">Judge Me!</button>
+    </div>
+
+    <div class="gallery" id="catGallery">
+        <img src="judgy cat pics/WhatsApp Image 2026-05-15 at 16.42.54.jpeg" class="cat-pic" alt="Judging Cat 1">
+        <img src="judgy cat pics/WhatsApp Image 2026-05-15 at 16.42.55.jpeg" class="cat-pic" alt="Judging Cat 2">
+        <img src="judgy cat pics/WhatsApp Image 2026-05-15 at 16.42.57.jpeg" class="cat-pic" alt="Judging Cat 3">
+    </div>
+
+    <script>
+        const judgements = [
+            "Your posture is offensive to my ancestors.",
+            "You smell like cheap kibble and bad decisions.",
+            "I've seen hairballs with more charisma.",
+            "Oh, you're wearing *that* today? Interesting.",
+            "I'm ignoring you on purpose.",
+            "You exist simply to open my cans.",
+            "I knocked over your glass because I could. Deal with it.",
+            "My nap is more important than your entire life.",
+            "You're not even worthy of a slow blink.",
+            "You call that petting? Pathetic."
+        ];
+
+        const escapeTexts = [
+            "SIKE!", "MISSED ME!", "CATCH ME!", "HISSSSSS", "🐾 NYOOM 🐾", "NOT TODAY", "BYE LOL"
+        ];
+
+        const btn = document.getElementById('judgeBtn');
+        const textElement = document.getElementById('judgementText');
+        const body = document.body;
+        const jZone = document.getElementById('jZone');
+        const gallery = document.getElementById('catGallery');
+        const header = document.getElementById('mainHeader');
+        const flashlight = document.getElementById('flashlightOverlay');
+
+        let clickCount = 0;
+        let escapeCount = 0;
+        let isEscaping = false;
+        let isBlackout = false;
+
+        // Tracks flashlight coordinates globally during blackout mode
+        window.addEventListener('mousemove', (e) => {
+            if (!isBlackout) return;
+            
+            // Generates a radial window clipping cut-out focused right over the cursor coordinates
+            flashlight.style.background = `radial-gradient(circle 130px at ${e.clientX}px ${e.clientY}px, transparent 100%, rgba(5, 5, 10, 0.98) 100%)`;
+        });
+
+        btn.addEventListener('click', (e) => {
+            if (isEscaping || isBlackout) return; 
+
+            clickCount++;
+
+            if (clickCount === 10) {
+                isEscaping = true;
+                textElement.textContent = "🐾 CRITICAL ERROR: CAT HAS THE ZOOMIES 🐾";
+                btn.classList.add('running');
+                
+                body.appendChild(btn); // Eject from parent containers to bypass rendering clips
+                moveButton();
+                return;
+            }
+
+            triggerJudgement();
+        });
+
+        btn.addEventListener('mouseenter', () => {
+            if (!isEscaping || isBlackout) return;
+
+            escapeCount++;
+            createMeowSpam();
+            knockThingsOver();
+
+            if (escapeCount >= 10) {
+                isEscaping = false;
+                escapeCount = 0;
+                clickCount = 0; 
+
+                btn.classList.remove('running');
+                btn.style.left = '';
+                btn.style.top = '';
+                
+                jZone.appendChild(btn); // Send button back to original home
+                
+                btn.classList.add('tired');
+                btn.textContent = "⚡ *Heavy Panting* Ok fine... ⚡";
+                textElement.textContent = `"Fine, you win. I'm too tired to run. Press it now... see if I care."`;
+
+                // Stage 3: Trigger the unhinged neon disco loop
+                body.classList.add('disco-active');
+
+                // After 6 seconds, cut the disco power and slam into PITCH BLACKOUT MODE
+                setTimeout(() => {
+                    body.classList.remove('disco-active');
+                    
+                    // Stage 4: Enter Blackout Mode
+                    isBlackout = true;
+                    body.classList.add('blackout-active');
+                    textElement.textContent = "🚨 THE DISCO BLEW THE MAIN FUSE! FIND A CAT IN THE DARK AND POKE IT TO RESET THE BREAKERS! 🚨";
+                }, 6000);
+            } else {
+                moveButton();
+            }
+        });
+
+        function moveButton() {
+            btn.textContent = escapeTexts[Math.floor(Math.random() * escapeTexts.length)];
+            
+            const viewWidth = document.documentElement.clientWidth;
+            const viewHeight = document.documentElement.clientHeight;
+            
+            const btnWidth = 220;  
+            const btnHeight = 65;  
+            const margin = 40;     
+
+            const maxX = viewWidth - btnWidth - margin;
+            const maxY = viewHeight - btnHeight - margin;
+
+            const safeMaxX = maxX > margin ? maxX : viewWidth - btnWidth;
+            const safeMaxY = maxY > margin ? maxY : viewHeight - btnHeight;
+
+            const x = Math.max(margin, Math.floor(Math.random() * safeMaxX));
+            const y = Math.max(margin, Math.floor(Math.random() * safeMaxY));
+
+            btn.style.left = `${x}px`;
+            btn.style.top = `${y}px`;
+        }
+
+        function triggerJudgement() {
+            const randomIndex = Math.floor(Math.random() * judgements.length);
+            textElement.textContent = `"${judgements[randomIndex]}"`;
+            
+            textElement.classList.remove('animate-pop');
+            void textElement.offsetWidth; 
+            textElement.classList.add('animate-pop');
+        }
+
+        function createMeowSpam() {
+            const spam = document.createElement('div');
+            spam.className = 'meow-spam';
+            spam.textContent = Math.random() > 0.5 ? "MEOW!!" : "🐈💨 *ZOOM*";
+            
+            const rect = btn.getBoundingClientRect();
+            spam.style.left = `${rect.left}px`;
+            spam.style.top = `${rect.top}px`;
+            
+            body.appendChild(spam);
+            setTimeout(() => spam.remove(), 800);
+        }
+
+        function knockThingsOver() {
+            const tilts = [-8, -5, -3, 3, 5, 8];
+            const randomTilt1 = tilts[Math.floor(Math.random() * tilts.length)];
+            const randomTilt2 = tilts[Math.floor(Math.random() * tilts.length)];
+            
+            jZone.style.transform = `rotate(${randomTilt1}deg) translateY(${randomTilt2}px)`;
+            gallery.style.transform = `rotate(${randomTilt2}deg)`;
+            if (Math.random() > 0.7) {
+                header.style.transform = `rotate(${randomTilt1 * 1.5}deg)`;
+            }
+        }
+
+        // Cat pictures interaction logic
+        const pics = document.querySelectorAll('.cat-pic');
+        pics.forEach(pic => {
+            pic.addEventListener('click', (e) => {
+                if (isBlackout) {
+                    // SUCCESS! User discovered a cat in the dark and poked it. Reset everything!
+                    isBlackout = false;
+                    body.classList.remove('blackout-active');
+                    
+                    // Cleanup flashlight custom backgrounds
+                    flashlight.style.background = '';
+                    
+                    // Wake button back up
+                    btn.classList.remove('tired');
+                    btn.textContent = "Judge Me!";
+                    
+                    // Straighten layouts back up out of chaos mode
+                    jZone.style.transform = "rotate(0deg)";
+                    gallery.style.transform = "rotate(0deg)";
+                    header.style.transform = "rotate(0deg)";
+                    
+                    textElement.textContent = "⚡ *BZZZT* Fuses fixed! You thoroughly annoyed me, but the power is back on.";
+                    
+                    // Extra massive meow spray for victory feedback
+                    for(let i=0; i<5; i++) {
+                        setTimeout(createMeowSpam, i * 150);
+                    }
+                    return;
+                }
+
+                // Standard light-mode insult trigger
+                const insults = ["*Hiss*", "*Aggressive Purr*", "*Meow of Disdain*", "DO NOT TOUCH THE ARTWORK."];
+                textElement.textContent = insults[Math.floor(Math.random() * insults.length)];
+                textElement.classList.remove('animate-pop');
+                void textElement.offsetWidth;
+                textElement.classList.add('animate-pop');
+            });
+        });
+    </script>
+</body>
+</html>
