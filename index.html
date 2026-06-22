@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Get Judged By A Cat!</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Nunito:wght=400;700;900&display=swap');
@@ -31,7 +31,7 @@
             transition: background 0.1s ease;
         }
 
-        /* ANNOYING DISCO MODE ACTIVATED */
+        /* ANNOYING DISCO MODE */
         @keyframes discoPsycho {
             0% { background-color: #ff00ff; background-image: none; }
             20% { background-color: #00ffff; }
@@ -55,16 +55,16 @@
             to { transform: rotate(360deg); }
         }
 
-        /* NEW: FLASHLIGHT BLACKOUT OVERLAY */
+        /* FLASHLIGHT OVERLAY */
         #flashlightOverlay {
             position: fixed;
             top: 0;
             left: 0;
             width: 100vw;
             height: 100vh;
-            background: #05050a; /* Pitch black defaults before cursor tracks */
-            z-index: 2147483646; /* Sits right under custom notifications, but masks everything else */
-            pointer-events: none; /* Crucial! Allows clicks to bypass the darkness and hit elements below */
+            background: #05050a; 
+            z-index: 2147483640; 
+            pointer-events: none; 
             opacity: 0;
             visibility: hidden;
             transition: opacity 0.6s ease;
@@ -76,26 +76,133 @@
         }
 
         body.blackout-active {
-            cursor: cell; /* Custom retro crosshair cursor for hunting */
+            cursor: cell; 
+            touch-action: none; 
+        }
+
+        /* GLIDING LIGHT EMOJIS WITH EXPANDED HITBOX */
+        .light-emoji {
+            position: fixed;
+            font-size: 3rem;
+            z-index: 2147483645; 
+            cursor: pointer;
+            user-select: none;
+            display: none;
+            line-height: 1;
+            padding: 25px; 
+            margin: -25px; 
+            transition: none !important;
+            pointer-events: auto;
+            touch-action: none;
+        }
+
+        /* INTERROGATION BOX */
+        #quizBox {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 2147483646; 
+            background: white;
+            padding: 2.5rem;
+            border-radius: 30px;
+            border: 6px solid var(--accent);
+            text-align: center;
+            box-shadow: 0 0 40px rgba(255, 105, 180, 0.6);
+            width: 90%;
+            max-width: 460px;
+            box-sizing: border-box;
+        }
+
+        #quizBox h3 {
+            font-size: 1.5rem;
+            margin: 0 0 1.5rem 0;
+            color: var(--text-dark);
+            line-height: 1.4;
+        }
+
+        .quiz-btn-container {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 1rem;
+            position: relative;
+            min-height: 60px;
+        }
+
+        .quiz-btn {
+            padding: 12px 20px !important;
+            width: 130px !important;
+            height: auto !important;
+            font-size: 1.1rem !important;
+            touch-action: manipulation;
+        }
+
+        #yesBtn { background: #2ecc71; box-shadow: 0 6px 0 #27ae60; }
+        #yesBtn:active { transform: translateY(6px); box-shadow: 0 0 0 #27ae60; }
+        #noBtn { background: #e74c3c; box-shadow: 0 6px 0 #c0392b; }
+        #noBtn:active { transform: translateY(6px); box-shadow: 0 0 0 #c0392b; }
+
+        #nextBtn { background: #3498db; box-shadow: 0 6px 0 #2980b9; position: relative; }
+        #exitBtn { background: #95a5a6; box-shadow: 0 6px 0 #7f8c8d; position: relative; }
+
+        #quizScore {
+            margin: 1.5rem 0 0 0;
+            font-size: 1.3rem;
+            font-weight: 900;
+            color: #7b68ee;
+        }
+
+        /* BOX OF GIFT MODAL */
+        #giftModal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background: rgba(0,0,0,0.85);
+            z-index: 2147483647;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .gift-content {
+            background: #ffe4e1;
+            padding: 2.5rem 1.5rem;
+            border-radius: 40px;
+            border: 6px dashed #ff69b4;
+            text-align: center;
+            box-shadow: 0 0 50px rgba(255, 105, 180, 0.8);
+            max-width: 500px;
+            width: 90%;
+            box-sizing: border-box;
+            animation: bounceIn 0.6s ease;
+        }
+
+        #giftBoxGraphic {
+            font-size: 5rem;
+            margin: 1.5rem 0;
+            cursor: pointer;
+            transition: transform 0.2s;
+            -webkit-user-select: none;
+            user-select: none;
         }
 
         header {
             text-align: center;
-            padding: 3rem 1rem;
-            animation: bounceIn 1s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-            transition: transform 0.5s ease;
+            padding: 2rem 1rem;
+            box-sizing: border-box;
         }
 
         h1 {
-            font-size: 4rem;
+            font-size: 2.8rem;
             color: var(--accent);
-            text-shadow: 3px 3px 0px #fff, 5px 5px 0px rgba(0,0,0,0.1);
+            text-shadow: 2px 2px 0px #fff, 4px 4px 0px rgba(0,0,0,0.1);
             margin: 0;
             line-height: 1.1;
         }
 
         p.subtitle {
-            font-size: 1.5rem;
+            font-size: 1.2rem;
             font-weight: 700;
             color: #7b68ee;
             margin-top: 10px;
@@ -103,20 +210,20 @@
 
         .judgment-zone {
             background: white;
-            padding: 2rem;
+            padding: 2rem 1.5rem;
             border-radius: 30px;
             box-shadow: 0 15px 35px rgba(255, 105, 180, 0.2);
             text-align: center;
             max-width: 600px;
             width: 90%;
-            margin: 2rem 0;
+            margin: 1rem 0;
             border: 4px dashed var(--primary);
             position: relative;
-            transition: transform 0.3s ease;
+            box-sizing: border-box;
         }
 
         .judgment-text {
-            font-size: 1.8rem;
+            font-size: 1.4rem;
             font-weight: 900;
             color: var(--text-dark);
             min-height: 80px;
@@ -130,8 +237,8 @@
             background: var(--accent);
             color: white;
             border: none;
-            padding: 15px 40px;
-            font-size: 1.5rem;
+            padding: 15px 35px;
+            font-size: 1.3rem;
             font-weight: bold;
             border-radius: 50px;
             cursor: pointer;
@@ -139,6 +246,7 @@
             transition: transform 0.1s, background-color 0.3s;
             font-family: 'Nunito', sans-serif;
             user-select: none;
+            -webkit-tap-highlight-color: transparent;
         }
 
         button:active {
@@ -148,10 +256,10 @@
 
         button.running {
             position: fixed !important;
-            z-index: 2147483647 !important; /* Absolute max priority layer */
+            z-index: 2147483647 !important; 
             transition: none !important; 
-            width: 220px !important;
-            height: 65px !important;
+            width: 180px !important;
+            height: 60px !important;
             padding: 0 !important;
             box-sizing: border-box !important;
             display: flex !important;
@@ -170,35 +278,46 @@
             display: flex;
             flex-wrap: wrap;
             justify-content: center;
-            gap: 2rem;
-            padding: 2rem;
+            gap: 1.5rem;
+            padding: 1rem;
             max-width: 1000px;
-            transition: transform 0.4s ease;
+            width: 100%;
+            box-sizing: border-box;
         }
 
-        .cat-pic {
-            width: 250px;
-            height: 250px;
-            object-fit: cover;
+        /* SHARED CORE RULES FOR CAT PICS AND EMOJI DEFAULT FALLBACKS */
+        .cat-pic, .cat-emoji-fallback {
+            width: 180px;
+            height: 180px;
             border-radius: 50%;
-            border: 8px solid white;
+            border: 6px solid white;
             box-shadow: 0 10px 20px rgba(0,0,0,0.1);
             transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             cursor: pointer;
+            -webkit-tap-highlight-color: transparent;
+            box-sizing: border-box;
         }
 
-        .cat-pic:hover {
-            transform: scale(1.1) rotate(5deg);
+        .cat-pic {
+            object-fit: cover;
         }
 
-        .cat-pic:nth-child(even):hover {
-            transform: scale(1.1) rotate(-5deg);
+        /* SPECIFIC DESIGN FOR THE EMOJI REPLACEMENT SPAN */
+        .cat-emoji-fallback {
+            background-color: #ffd1dc; /* Soft pastel pink */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4.5rem;
+            user-select: none;
         }
+
+        .cat-pic:hover, .cat-emoji-fallback:hover { transform: scale(1.05) rotate(3deg); }
 
         .meow-spam {
             position: fixed;
             font-weight: 900;
-            font-size: 2rem;
+            font-size: 1.8rem;
             color: red;
             pointer-events: none;
             z-index: 2147483647;
@@ -208,7 +327,7 @@
 
         @keyframes floatUp {
             0% { transform: translateY(0) scale(1); opacity: 1; }
-            100% { transform: translateY(-100px) scale(1.5); opacity: 0; }
+            100% { transform: translateY(-80px) scale(1.3); opacity: 0; }
         }
 
         @keyframes bounceIn {
@@ -216,21 +335,40 @@
             60% { transform: scale(1.1); opacity: 1; }
             100% { transform: scale(1); }
         }
-
-        @keyframes pop {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.2); color: var(--accent); }
-            100% { transform: scale(1); }
-        }
-
-        .animate-pop {
-            animation: pop 0.4s ease-out;
-        }
     </style>
 </head>
 <body>
 
     <div id="flashlightOverlay"></div>
+
+    <div class="light-emoji" id="le1">💡</div>
+    <div class="light-emoji" id="le2">💡</div>
+    <div class="light-emoji" id="le3">💡</div>
+
+    <div id="quizBox">
+        <h3 id="quizQuestionText">Question text?</h3>
+        
+        <div class="quiz-btn-container" id="questionControls">
+            <button id="yesBtn" class="quiz-btn">YES</button>
+            <button id="noBtn" class="quiz-btn">NO</button>
+        </div>
+
+        <div class="quiz-btn-container" id="endGameControls" style="display: none;">
+            <button id="nextBtn" class="quiz-btn">NEXT</button>
+            <button id="exitBtn" class="quiz-btn">EXIT</button>
+        </div>
+
+        <p id="quizScore">Tame Streak: 0/5</p>
+    </div>
+
+    <div id="giftModal">
+        <div class="gift-content">
+            <h1 style="color: #ff1493; font-size: 1.8rem; margin: 0;">🎁 BOX OF GIFT ACCESSED 🎁</h1>
+            <p id="giftStatusText" style="font-weight: bold; margin-top: 10px;">The Feline Overlord yields a reward. Click the box to open it!</p>
+            <div id="giftBoxGraphic">🎁</div>
+            <button id="giftCloseBtn" style="background: black; box-shadow: 0 6px 0 #333; display: none;">Accept Gift & End Game</button>
+        </div>
+    </div>
 
     <header id="mainHeader">
         <h1>🐈 The Judgy Cat 🐾</h1>
@@ -245,9 +383,9 @@
     </div>
 
     <div class="gallery" id="catGallery">
-        <img src="judgy cat pics/WhatsApp Image 2026-05-15 at 16.42.54.jpeg" class="cat-pic" alt="Judging Cat 1">
-        <img src="judgy cat pics/WhatsApp Image 2026-05-15 at 16.42.55.jpeg" class="cat-pic" alt="Judging Cat 2">
-        <img src="judgy cat pics/WhatsApp Image 2026-05-15 at 16.42.57.jpeg" class="cat-pic" alt="Judging Cat 3">
+        <img src="image/catimage1.jpeg" class="cat-pic" alt="Judging Cat 1">
+        <img src="image/catimage2.jpeg" class="cat-pic" alt="Judging Cat 2">
+        <img src="image/catimage3.jpeg" class="cat-pic" alt="Judging Cat 3">
     </div>
 
     <script>
@@ -268,6 +406,16 @@
             "SIKE!", "MISSED ME!", "CATCH ME!", "HISSSSSS", "🐾 NYOOM 🐾", "NOT TODAY", "BYE LOL"
         ];
 
+        const catQuestions = [
+            { q: "If I sleep 16 hours, eat Royal Canin for 15 minutes, and nap another 5.75 hours, did I sleep enough?", a: true },
+            { q: "Opening a pack of Me-O snacks creates acoustic frequency fluctuations that break physics to reach my ears instantly?", a: true },
+            { q: "Is it safe to pet my soft fluffy belly exactly 3 times if I look happy after eating snacks?", a: false },
+            { q: "Is mixing supermarket brand kibble with Royal Canin perfectly acceptable?", a: false },
+            { q: "When I stare into your soul and slowly ignore your call, am I showing submission?", a: false },
+            { q: "True or False: Sleeping on your face at 3 AM is a calculated tactical maneuver to check if you are still alive?", a: true },
+            { q: "Can I identify the precise molecular design of Royal Canin savory gravy from over 4.2 miles away?", a: true }
+        ];
+
         const btn = document.getElementById('judgeBtn');
         const textElement = document.getElementById('judgementText');
         const body = document.body;
@@ -275,40 +423,72 @@
         const gallery = document.getElementById('catGallery');
         const header = document.getElementById('mainHeader');
         const flashlight = document.getElementById('flashlightOverlay');
+        
+        const quizBox = document.getElementById('quizBox');
+        const quizQuestionText = document.getElementById('quizQuestionText');
+        const quizScore = document.getElementById('quizScore');
+        const questionControls = document.getElementById('questionControls');
+        const endGameControls = document.getElementById('endGameControls');
+        const nextBtn = document.getElementById('nextBtn');
+        const exitBtn = document.getElementById('exitBtn');
+        
+        const giftModal = document.getElementById('giftModal');
+        const giftBoxGraphic = document.getElementById('giftBoxGraphic');
+        const giftStatusText = document.getElementById('giftStatusText');
+        const giftCloseBtn = document.getElementById('giftCloseBtn');
 
         let clickCount = 0;
         let escapeCount = 0;
         let isEscaping = false;
         let isBlackout = false;
+        
+        let tameStreak = 0;
+        let currentQuestion = null;
+        let lightsFound = 0;
+        let quizState = ""; 
 
-        // Tracks flashlight coordinates globally during blackout mode
+        let emojiPhysicsData = [];
+        let animationFrameId = null;
+
+        function renderFlashlightCircle(clientX, clientY) {
+            flashlight.style.background = `radial-gradient(circle 100px at ${clientX}px ${clientY}px, transparent 100%, rgba(5, 5, 10, 0.99) 100%)`;
+        }
+
         window.addEventListener('mousemove', (e) => {
             if (!isBlackout) return;
-            
-            // Generates a radial window clipping cut-out focused right over the cursor coordinates
-            flashlight.style.background = `radial-gradient(circle 130px at ${e.clientX}px ${e.clientY}px, transparent 100%, rgba(5, 5, 10, 0.98) 100%)`;
+            renderFlashlightCircle(e.clientX, e.clientY);
         });
+
+        window.addEventListener('touchmove', (e) => {
+            if (!isBlackout) return;
+            const touch = e.touches[0];
+            renderFlashlightCircle(touch.clientX, touch.clientY);
+        }, { passive: true });
+
+        window.addEventListener('touchstart', (e) => {
+            if (!isBlackout) return;
+            const touch = e.touches[0];
+            renderFlashlightCircle(touch.clientX, touch.clientY);
+        }, { passive: true });
 
         btn.addEventListener('click', (e) => {
             if (isEscaping || isBlackout) return; 
-
             clickCount++;
 
             if (clickCount === 10) {
                 isEscaping = true;
                 textElement.textContent = "🐾 CRITICAL ERROR: CAT HAS THE ZOOMIES 🐾";
                 btn.classList.add('running');
-                
-                body.appendChild(btn); // Eject from parent containers to bypass rendering clips
+                body.appendChild(btn); 
                 moveButton();
                 return;
             }
-
             triggerJudgement();
         });
 
-        btn.addEventListener('mouseenter', () => {
+        function handleEscapeAction(e) {
             if (!isEscaping || isBlackout) return;
+            if (e) e.preventDefault(); 
 
             escapeCount++;
             createMeowSpam();
@@ -322,39 +502,239 @@
                 btn.classList.remove('running');
                 btn.style.left = '';
                 btn.style.top = '';
-                
-                jZone.appendChild(btn); // Send button back to original home
+                jZone.appendChild(btn); 
                 
                 btn.classList.add('tired');
                 btn.textContent = "⚡ *Heavy Panting* Ok fine... ⚡";
                 textElement.textContent = `"Fine, you win. I'm too tired to run. Press it now... see if I care."`;
 
-                // Stage 3: Trigger the unhinged neon disco loop
                 body.classList.add('disco-active');
 
-                // After 6 seconds, cut the disco power and slam into PITCH BLACKOUT MODE
                 setTimeout(() => {
                     body.classList.remove('disco-active');
-                    
-                    // Stage 4: Enter Blackout Mode
-                    isBlackout = true;
-                    body.classList.add('blackout-active');
-                    textElement.textContent = "🚨 THE DISCO BLEW THE MAIN FUSE! FIND A CAT IN THE DARK AND POKE IT TO RESET THE BREAKERS! 🚨";
+                    startBlackoutPhase();
                 }, 6000);
             } else {
                 moveButton();
             }
+        }
+
+        btn.addEventListener('mouseenter', handleEscapeAction);
+        btn.addEventListener('touchstart', handleEscapeAction); 
+
+        function startBlackoutPhase() {
+            isBlackout = true;
+            body.classList.add('blackout-active');
+            textElement.textContent = "🚨 BREAKERS BLOWN! THE LIGHT EMOJIS ARE RUNNING AWAY! CATCH AND CLICK ALL 3 TO RESTORE POWER! 🚨";
+            lightsFound = 0;
+            emojiPhysicsData = [];
+
+            const emojis = document.querySelectorAll('.light-emoji');
+            emojis.forEach((emoji) => {
+                const maxX = window.innerWidth - 60;
+                const maxY = window.innerHeight - 60;
+                
+                const currentData = {
+                    element: emoji,
+                    x: Math.max(40, Math.floor(Math.random() * maxX)),
+                    y: Math.max(40, Math.floor(Math.random() * maxY)),
+                    vx: (Math.random() > 0.5 ? 1 : -1) * (Math.random() * 3 + 3), 
+                    vy: (Math.random() > 0.5 ? 1 : -1) * (Math.random() * 3 + 3)  
+                };
+
+                emoji.style.left = `${currentData.x}px`;
+                emoji.style.top = `${currentData.y}px`;
+                emoji.style.display = 'block';
+                emojiPhysicsData.push(currentData);
+            });
+
+            if (!animationFrameId) {
+                animationFrameId = requestAnimationFrame(updateEmojiPhysics);
+            }
+        }
+
+        function updateEmojiPhysics() {
+            if (!isBlackout) {
+                animationFrameId = null;
+                return;
+            }
+
+            const sizeOffset = 50; 
+
+            emojiPhysicsData.forEach((data) => {
+                if (data.element.style.display === 'none') return;
+
+                data.x += data.vx;
+                data.y += data.vy;
+
+                if (data.x <= 0) {
+                    data.x = 0;
+                    data.vx *= -1;
+                } else if (data.x >= window.innerWidth - sizeOffset) {
+                    data.x = window.innerWidth - sizeOffset;
+                    data.vx *= -1;
+                }
+
+                if (data.y <= 0) {
+                    data.y = 0;
+                    data.vy *= -1;
+                } else if (data.y >= window.innerHeight - sizeOffset) {
+                    data.y = window.innerHeight - sizeOffset;
+                    data.vy *= -1;
+                }
+
+                data.element.style.left = `${data.x}px`;
+                data.element.style.top = `${data.y}px`;
+            });
+
+            animationFrameId = requestAnimationFrame(updateEmojiPhysics);
+        }
+
+        document.querySelectorAll('.light-emoji').forEach(emoji => {
+            function catchLightBall(e) {
+                if (!isBlackout) return;
+                e.stopPropagation();
+                e.preventDefault(); 
+                
+                if (emoji.style.display === 'none') return; 
+                emoji.style.display = 'none';
+                lightsFound++;
+                
+                if (lightsFound === 3) {
+                    isBlackout = false;
+                    body.classList.remove('blackout-active');
+                    flashlight.style.background = '';
+                    
+                    quizBox.style.display = 'block';
+                    questionControls.style.display = 'flex';
+                    endGameControls.style.display = 'none';
+                    tameStreak = 0;
+                    quizScore.style.display = 'block';
+                    quizScore.textContent = `Tame Streak: ${tameStreak}/5`;
+                    nextQuestion();
+                }
+            }
+            emoji.addEventListener('click', catchLightBall);
+            emoji.addEventListener('touchstart', catchLightBall);
         });
+
+        function nextQuestion() {
+            currentQuestion = catQuestions[Math.floor(Math.random() * catQuestions.length)];
+            quizQuestionText.textContent = `😼 Advanced Interrogation: "${currentQuestion.q}"`;
+        }
+
+        document.getElementById('yesBtn').addEventListener('click', () => handleResponse(true));
+        document.getElementById('noBtn').addEventListener('click', () => handleResponse(false));
+
+        function handleResponse(userSelectedTrue) {
+            if (userSelectedTrue === currentQuestion.a) {
+                tameStreak++;
+                quizScore.textContent = `Tame Streak: ${tameStreak}/5`;
+                
+                if (tameStreak === 5) {
+                    quizState = "win";
+                    questionControls.style.display = 'none';
+                    quizScore.style.display = 'none';
+                    quizQuestionText.textContent = "😼 Cat says: 'Impressive attention to detail. I accept you. Proceed... if you can.'";
+                    endGameControls.style.display = 'flex';
+                } else {
+                    nextQuestion();
+                }
+            } else {
+                quizState = "lose";
+                questionControls.style.display = 'none';
+                quizScore.style.display = 'none';
+                quizQuestionText.textContent = "😾 WRONG ANSWER! Feline authority rejected! LEAVE AT ONCE!";
+                endGameControls.style.display = 'flex';
+            }
+        }
+
+        function swapControlButtons() {
+            const parent = nextBtn.parentNode;
+            if (nextBtn.nextElementSibling === exitBtn) {
+                parent.insertBefore(exitBtn, nextBtn);
+            } else {
+                parent.insertBefore(nextBtn, exitBtn);
+            }
+        }
+
+        nextBtn.addEventListener('mouseenter', () => { if (quizState === "lose") swapControlButtons(); });
+        nextBtn.addEventListener('touchstart', (e) => { 
+            if (quizState === "lose") { e.preventDefault(); swapControlButtons(); } 
+        });
+
+        exitBtn.addEventListener('mouseenter', () => { if (quizState === "win") swapControlButtons(); });
+        exitBtn.addEventListener('touchstart', (e) => { 
+            if (quizState === "win") { e.preventDefault(); swapControlButtons(); } 
+        });
+
+        nextBtn.addEventListener('click', () => {
+            if (quizState === "win") {
+                quizBox.style.display = 'none';
+                triggerGiftPhase();
+            } else if (quizState === "lose") { FullSystemReset(); }
+        });
+
+        exitBtn.addEventListener('click', () => {
+            if (quizState === "lose") { fullSystemReset(); } 
+            else if (quizState === "win") {
+                quizBox.style.display = 'none';
+                triggerGiftPhase();
+            }
+        });
+
+        function triggerGiftPhase() {
+            giftModal.style.display = 'flex';
+            giftBoxGraphic.textContent = "🎁";
+            giftStatusText.innerHTML = "🏆 ACHIEVEMENT UNLOCKED: ELITE HAIRBALL COLLECTOR 🏆<br><br>The cat respects your persistence. Click below to inspect your prize!";
+            giftCloseBtn.style.display = 'none';
+        }
+
+        giftBoxGraphic.addEventListener('click', () => {
+            giftBoxGraphic.textContent = "🤢";
+            giftStatusText.innerHTML = "Inside the box is... a moist, sticky, premium <span style='color:brown; font-weight:900;'>CAT HAIRBALL</span>! <br><br>Truly, a magnificent token of royal configuration.";
+            giftCloseBtn.style.display = 'inline-block';
+        });
+
+        giftCloseBtn.addEventListener('click', () => {
+            giftModal.style.display = 'none';
+            fullSystemReset();
+        });
+
+        function fullSystemReset() {
+            quizBox.style.display = 'none';
+            giftModal.style.display = 'none';
+            isBlackout = false;
+            body.classList.remove('blackout-active');
+            flashlight.style.background = '';
+            
+            const parent = nextBtn.parentNode;
+            if (nextBtn.nextElementSibling !== exitBtn) {
+                parent.insertBefore(nextBtn, exitBtn);
+            }
+
+            btn.classList.remove('tired');
+            btn.textContent = "Judge Me!";
+            
+            jZone.style.transform = "rotate(0deg)";
+            gallery.style.transform = "rotate(0deg)";
+            header.style.transform = "rotate(0deg)";
+            
+            textElement.textContent = `"Hmph. Let's pretend that never happened."`;
+            clickCount = 0;
+            escapeCount = 0;
+            tameStreak = 0;
+            quizState = "";
+        }
 
         function moveButton() {
             btn.textContent = escapeTexts[Math.floor(Math.random() * escapeTexts.length)];
-            
             const viewWidth = document.documentElement.clientWidth;
             const viewHeight = document.documentElement.clientHeight;
             
-            const btnWidth = 220;  
-            const btnHeight = 65;  
-            const margin = 40;     
+            const btnWidth = 180;  
+            const btnHeight = 60;  
+            const margin = 25;     
 
             const maxX = viewWidth - btnWidth - margin;
             const maxY = viewHeight - btnHeight - margin;
@@ -372,73 +752,45 @@
         function triggerJudgement() {
             const randomIndex = Math.floor(Math.random() * judgements.length);
             textElement.textContent = `"${judgements[randomIndex]}"`;
-            
-            textElement.classList.remove('animate-pop');
-            void textElement.offsetWidth; 
-            textElement.classList.add('animate-pop');
         }
 
         function createMeowSpam() {
             const spam = document.createElement('div');
             spam.className = 'meow-spam';
             spam.textContent = Math.random() > 0.5 ? "MEOW!!" : "🐈💨 *ZOOM*";
-            
             const rect = btn.getBoundingClientRect();
             spam.style.left = `${rect.left}px`;
             spam.style.top = `${rect.top}px`;
-            
             body.appendChild(spam);
             setTimeout(() => spam.remove(), 800);
         }
 
         function knockThingsOver() {
-            const tilts = [-8, -5, -3, 3, 5, 8];
+            const tilts = [-6, -4, 4, 6];
             const randomTilt1 = tilts[Math.floor(Math.random() * tilts.length)];
             const randomTilt2 = tilts[Math.floor(Math.random() * tilts.length)];
-            
             jZone.style.transform = `rotate(${randomTilt1}deg) translateY(${randomTilt2}px)`;
             gallery.style.transform = `rotate(${randomTilt2}deg)`;
-            if (Math.random() > 0.7) {
-                header.style.transform = `rotate(${randomTilt1 * 1.5}deg)`;
-            }
         }
 
-        // Cat pictures interaction logic
-        const pics = document.querySelectorAll('.cat-pic');
-        pics.forEach(pic => {
-            pic.addEventListener('click', (e) => {
-                if (isBlackout) {
-                    // SUCCESS! User discovered a cat in the dark and poked it. Reset everything!
-                    isBlackout = false;
-                    body.classList.remove('blackout-active');
-                    
-                    // Cleanup flashlight custom backgrounds
-                    flashlight.style.background = '';
-                    
-                    // Wake button back up
-                    btn.classList.remove('tired');
-                    btn.textContent = "Judge Me!";
-                    
-                    // Straighten layouts back up out of chaos mode
-                    jZone.style.transform = "rotate(0deg)";
-                    gallery.style.transform = "rotate(0deg)";
-                    header.style.transform = "rotate(0deg)";
-                    
-                    textElement.textContent = "⚡ *BZZZT* Fuses fixed! You thoroughly annoyed me, but the power is back on.";
-                    
-                    // Extra massive meow spray for victory feedback
-                    for(let i=0; i<5; i++) {
-                        setTimeout(createMeowSpam, i * 150);
-                    }
-                    return;
-                }
+        function triggerImageInsult() {
+            if (isBlackout) return;
+            const insults = ["*Hiss*", "*Aggressive Purr*", "*Meow of Disdain*", "DO NOT TOUCH THE ARTWORK."];
+            textElement.textContent = insults[Math.floor(Math.random() * insults.length)];
+        }
 
-                // Standard light-mode insult trigger
-                const insults = ["*Hiss*", "*Aggressive Purr*", "*Meow of Disdain*", "DO NOT TOUCH THE ARTWORK."];
-                textElement.textContent = insults[Math.floor(Math.random() * insults.length)];
-                textElement.classList.remove('animate-pop');
-                void textElement.offsetWidth;
-                textElement.classList.add('animate-pop');
+        const fallbackEmojis = ["😾", "🐱", "🐈"];
+        const pics = document.querySelectorAll('.cat-pic');
+
+        pics.forEach((pic, index) => {
+            pic.addEventListener('click', triggerImageInsult);
+
+            pic.addEventListener('error', () => {
+                const emojiDiv = document.createElement('div');
+                emojiDiv.className = 'cat-emoji-fallback';
+                emojiDiv.textContent = fallbackEmojis[index % fallbackEmojis.length];
+                emojiDiv.addEventListener('click', triggerImageInsult);
+                pic.parentNode.replaceChild(emojiDiv, pic);
             });
         });
     </script>
